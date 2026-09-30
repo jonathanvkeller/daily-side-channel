@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Tags from '../../components/Tags.astro';
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+export async function getStaticPaths() {
+  const entries = await getCollection('briefings');
+  const tags = [...new Set(entries.flatMap(e => e.data.tags))];
+  return tags.map(tag => ({ params:{tag:slugify(tag)}, props:{ tag } }));
+}
+const { tag } = Astro.props;
+const entries = (await getCollection('briefings')).filter(e => e.data.tags.includes(tag)).sort((a,b)=>b.data.date.valueOf()-a.data.date.valueOf());
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title={tag}>
+  <div class="shell">
+    <div class="kicker">tag</div>
+    <h1>{tag}</h1>
+    {entries.map(entry => (
+      <article class="archive-item">
+        <div class="archive-date">{entry.data.date.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'})}</div>
+        <div>
+          <h3><a href={`${base}briefings/${entry.id}/`}>{entry.data.title}</a></h3>
+          <p>{entry.data.summary}</p>
+          <Tags tags={entry.data.tags} />
+        </div>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

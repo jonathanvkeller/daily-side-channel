@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+const entries = await getCollection('briefings');
+const options = [];
+for (const entry of entries) {
+  const { headings } = await render(entry);
+  const sectionHeadings = headings.filter(h => h.depth === 2);
+  if (sectionHeadings.length) for (const heading of sectionHeadings) options.push(`briefings/${entry.id}/#${heading.slug}`);
+  else options.push(`briefings/${entry.id}/`);
+}
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="Random Rabbit Hole">
+  <div class="shell">
+    <div class="random-box">
+      <div class="kicker">stochastic editorial policy</div>
+      <h1>random rabbit hole</h1>
+      <p>Pick a section from the archive without pretending you knew what you wanted.</p>
+      <button id="random-button" class="button">open trapdoor ↝</button>
+    </div>
+  </div>
+  <script define:vars={{options,base}}>
+    const button = document.querySelector('#random-button');
+    button.addEventListener('click', () => {
+      const target = options[Math.floor(Math.random() * options.length)];
+      window.location.href = base + target;
+    });
+  </script>
+</BaseLayout>

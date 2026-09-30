@@ -1,0 +1,121 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Daily Side-Channel',
+  description = 'A daily archive of strange artifacts, useful collisions, creative fuel, and rabbit holes.'
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const base = import.meta.env.BASE_URL;
+const href = (path = '') => `${base}${path.replace(/^\/+/, '')}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={href('favicon.svg')} />
+    <link rel="alternate" type="application/atom+xml" title="Daily Side-Channel" href={href('feed.xml')} />
+    <title>{title === 'Daily Side-Channel' ? title : `${title} · Daily Side-Channel`}</title>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="masthead__inner">
+        <a class="brand" href={href('')} aria-label="Daily Side-Channel home">
+          <span class="brand__mark">///</span>
+          <span>DAILY SIDE-CHANNEL</span>
+        </a>
+        <nav aria-label="Primary">
+          <a href={href('archive/')}>archive</a>
+          <a href={href('tags/')}>tags</a>
+          <a href={href('random/')}>random</a>
+          <a href={href('about/')}>about</a>
+          <a href={href('feed.xml')}>rss</a>
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="footer">
+      <div>small systems · strange artifacts · useful collisions</div>
+      <div><a href={href('archive/')}>archive</a> / <a href={href('feed.xml')}>atom</a></div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+:root {
+  --paper: #f2efe7; --ink: #151515; --muted: #706d65; --line: #b8b2a6;
+  --acid: #d6d31f; --blue: #006ba6; --warm: #ded8cc; --max: 72rem; --measure: 44rem;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); color: var(--ink); }
+body {
+  margin: 0;
+  background: linear-gradient(rgba(21,21,21,.025) 1px, transparent 1px) 0 0/100% 2.2rem, var(--paper);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px; line-height: 1.68;
+}
+a { color: var(--blue); text-decoration-thickness: .08em; text-underline-offset: .16em; }
+a:hover { background: var(--acid); color: var(--ink); text-decoration: none; }
+.masthead { border-top: 8px solid var(--ink); border-bottom: 1px solid var(--ink); background: rgba(242,239,231,.96); }
+.masthead__inner, .footer {
+  max-width: var(--max); margin: auto; padding: .85rem 1.2rem; display: flex;
+  justify-content: space-between; gap: 1rem; align-items: baseline;
+}
+.brand, nav, .kicker, .tag, .issue-meta, .archive-date, .footer, input, button {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.brand { color: var(--ink); font-weight: 800; letter-spacing: .04em; text-decoration: none; }
+.brand:hover { background: transparent; color: var(--blue); }
+.brand__mark { color: var(--blue); margin-right: .35rem; }
+nav { display: flex; flex-wrap: wrap; gap: .8rem; font-size: .82rem; }
+nav a { color: var(--ink); }
+main { min-height: 76vh; }
+.shell { max-width: var(--max); margin: 0 auto; padding: 3rem 1.2rem 5rem; }
+.article-grid { display: grid; grid-template-columns: minmax(8rem, 13rem) minmax(0, var(--measure)); gap: 2.5rem; align-items: start; }
+.margin-note { position: sticky; top: 1.5rem; font-size: .83rem; line-height: 1.5; color: var(--muted); }
+.kicker { text-transform: uppercase; letter-spacing: .12em; font-size: .73rem; color: var(--muted); }
+h1, h2, h3 { line-height: 1.08; text-wrap: balance; }
+h1 { font-size: clamp(2.7rem, 8vw, 5.6rem); font-weight: 500; letter-spacing: -.045em; margin: .3rem 0 1.2rem; }
+h2 { font-size: clamp(1.65rem, 4vw, 2.5rem); margin: 3.4rem 0 1rem; padding-top: .7rem; border-top: 2px solid var(--ink); }
+h3 { font-size: 1.35rem; margin-top: 2.3rem; }
+article p, article li { max-width: var(--measure); }
+article blockquote { margin: 2rem 0; padding: .25rem 0 .25rem 1.3rem; border-left: .4rem solid var(--acid); font-style: italic; }
+article pre, article code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+article pre { overflow-x: auto; background: var(--ink); color: var(--paper); padding: 1rem; }
+article hr { border: 0; border-top: 1px solid var(--line); margin: 3rem 0; }
+article img { max-width: 100%; height: auto; }
+.issue-meta { color: var(--muted); font-size: .82rem; display: flex; gap: .8rem; flex-wrap: wrap; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; margin: 1rem 0; }
+.tag { display: inline-block; padding: .13rem .42rem; border: 1px solid var(--ink); color: var(--ink); font-size: .72rem; text-decoration: none; background: var(--paper); }
+.tag:hover { background: var(--acid); }
+.issue-nav { border-top: 1px solid var(--ink); margin-top: 4rem; padding-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.issue-nav > :last-child { text-align: right; }
+.archive-head { max-width: 52rem; margin-bottom: 2rem; }
+.archive-controls { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.4rem 0 2.5rem; }
+.search { width: min(100%, 32rem); border: 1px solid var(--ink); background: #fffdf6; padding: .75rem .85rem; border-radius: 0; font-size: .95rem; }
+.month { margin: 2.5rem 0 3.5rem; }
+.month > h2 { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; border-top: 1px solid var(--ink); padding-top: .55rem; margin-bottom: .3rem; }
+.archive-item { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.archive-item h3 { margin: 0 0 .3rem; font-size: 1.35rem; }
+.archive-item p { margin: 0; color: #45423c; }
+.archive-date { font-size: .78rem; color: var(--muted); }
+.empty-state { display: none; padding: 2rem 0; font-style: italic; }
+.footer { border-top: 1px solid var(--ink); font-size: .76rem; color: var(--muted); }
+.random-box { max-width: 40rem; border: 2px solid var(--ink); padding: 1.3rem; box-shadow: 7px 7px 0 var(--acid); }
+.button { display: inline-block; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); padding: .55rem .8rem; text-decoration: none; cursor:pointer; }
+.button:hover { background: var(--acid); color: var(--ink); }
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .masthead__inner, .footer { align-items: flex-start; flex-direction: column; }
+  .article-grid { grid-template-columns: 1fr; gap: .8rem; }
+  .margin-note { position: static; border-bottom: 1px solid var(--line); padding-bottom: .8rem; }
+  .archive-item { grid-template-columns: 1fr; gap: .2rem; }
+  h1 { font-size: clamp(2.4rem, 14vw, 4rem); }
+}
+</style>

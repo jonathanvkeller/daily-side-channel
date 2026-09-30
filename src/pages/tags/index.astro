@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const entries = await getCollection('briefings');
+const counts = new Map();
+for (const e of entries) for (const tag of e.data.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+const tags = [...counts].sort((a,b)=>a[0].localeCompare(b[0]));
+const base = import.meta.env.BASE_URL;
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+---
+<BaseLayout title="Tags">
+  <div class="shell">
+    <div class="kicker">routes into the archive</div>
+    <h1>tags</h1>
+    <div class="tags">
+      {tags.map(([tag,count]) => <a class="tag" href={`${base}tags/${slug(tag)}/`}>{tag} · {count}</a>)}
+    </div>
+  </div>
+</BaseLayout>

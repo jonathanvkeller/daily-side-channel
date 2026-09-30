@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Tags from '../components/Tags.astro';
+
+const entries = (await getCollection('briefings')).sort((a,b) => b.data.date.valueOf() - a.data.date.valueOf());
+const latest = entries[0];
+const previous = entries[1];
+const { Content } = await render(latest);
+const base = import.meta.env.BASE_URL;
+const dateFmt = latest.data.date.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+---
+<BaseLayout description={latest.data.summary}>
+  <div class="shell article-grid">
+    <aside class="margin-note">
+      <div class="kicker">latest transmission</div>
+      <div class="issue-meta">{dateFmt}</div>
+      <Tags tags={latest.data.tags} />
+      <p><a href={`${base}archive/`}>all briefings →</a></p>
+      <p><a href={`${base}random/`}>random rabbit hole ↝</a></p>
+    </aside>
+    <article>
+      <h1>{latest.data.title}</h1>
+      <Content />
+      <nav class="issue-nav" aria-label="Issue navigation">
+        <span>{previous && <a href={`${base}briefings/${previous.id}/`}>← {previous.data.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</a>}</span>
+        <span><a href={`${base}archive/`}>archive →</a></span>
+      </nav>
+    </article>
+  </div>
+</BaseLayout>

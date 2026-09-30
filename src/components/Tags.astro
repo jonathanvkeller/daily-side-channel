@@ -1,0 +1,8 @@
+---
+const { tags = [] } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+<div class="tags">
+  {tags.map((tag) => <a class="tag" href={`${base}tags/${slug(tag)}/`}>{tag}</a>)}
+</div>
